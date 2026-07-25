@@ -504,3 +504,112 @@ class SearchScreen extends StatelessWidget {
   }
 }
 }
+class Message {
+  final String senderId;
+  final String receiverId;
+  final String text;
+  final DateTime timestamp;
+
+  Message({
+    required this.senderId,
+    required this.receiverId,
+    required this.text,
+    required this.timestamp,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      "senderId": senderId,
+      "receiverId": receiverId,
+      "text": text,
+      "timestamp": timestamp.toIso8601String(),
+    };
+  }import 'package:flutter/material.dart';
+
+class ChatScreen extends StatelessWidget {
+  const ChatScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Chat"),
+      ),
+      body: Column(
+        children: [
+          const Expanded(
+            child: Center(
+              child: Text("Messages will appear here"),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: Row(
+              children: [
+                const Expanded(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: "Type a message...",
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.send),
+                  onPressed: () {
+                    // Send message
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }lib/
+ ├── main.dart
+ ├── models/
+ ├── screens/
+ ├── widgets/
+ ├── services/
+ ├── providers/
+ └── utils/
+}
+    class Story {
+  final String id;
+  final String userId;
+  final String imageUrl;
+  final DateTime createdAt;
+
+  Story({
+    required this.id,
+    required this.userId,
+    required this.imageUrl,
+    required this.createdAt,
+  });
+
+  bool get isExpired =>
+      DateTime.now().difference(createdAt).inHours >= 24;
+}
+}CircleAvatar(
+  radius: 35,
+  backgroundImage: NetworkImage(
+    "https://your-image-url.com/photo.jpg",
+  ),
+)
+    SizedBox(
+  height: 90,
+  child: ListView.builder(
+    scrollDirection: Axis.horizontal,
+    itemCount: stories.length,
+    itemBuilder: (context, index) {
+      return Padding(
+        padding: const EdgeInsets.all(8),
+        child: CircleAvatar(
+          radius: 35,
+          backgroundImage:
+              NetworkImage(stories[index].imageUrl),
+        ),
+      );
+    },
+  ),
+)
