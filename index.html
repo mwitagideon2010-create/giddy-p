@@ -1,266 +1,506 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Giddy Racing V2</title>
+import 'package:flutter/material.dart';
 
-<style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
+void main() {
+  runApp(const SnapWaveApp());
 }
 
-body{
-background:#222;
-overflow:hidden;
-color:white;
-text-align:center;
-}
-
-#hud{
-background:#111;
-padding:12px;
-display:flex;
-justify-content:space-around;
-font-weight:bold;
-font-size:18px;
-}
-
-#game{
-position:relative;
-width:360px;
-height:640px;
-margin:10px auto;
-background:#555;
-overflow:hidden;
-border:6px solid white;
-}
-
-#road{
-position:absolute;
-width:100%;
-height:100%;
-background:#555;
-}
-
-.line{
-position:absolute;
-width:10px;
-height:60px;
-left:175px;
-background:white;
-}
-
-#car{
-position:absolute;
-width:60px;
-height:110px;
-bottom:20px;
-left:150px;
-border-radius:12px;
-background:linear-gradient(red,darkred);
-border:3px solid white;
-}
-
-#car:before{
-content:"";
-position:absolute;
-width:36px;
-height:30px;
-left:12px;
-top:10px;
-background:#66ccff;
-border-radius:8px;
-}
-
-.wheel{
-position:absolute;
-width:10px;
-height:25px;
-background:black;
-border-radius:5px;
-}<script>
-
-let score=0;
-let coins=0;
-let level=1;
-let lives=3;
-
-const car=document.getElementById("car");
-const game=document.getElementById("game");
-
-const scoreText=document.getElementById("score");
-const coinText=document.getElementById("coins");
-const levelText=document.getElementById("level");
-const livesText=document.getElementById("lives");
-
-let carX=150;
-let gameRunning=false;
-
-for(let i=0;i<12;i++){
-
-const line=document.createElement("div");
-
-line.className="line";
-
-line.style.top=(i*70)+"px";
-
-game.appendChild(line);
-
-}
-
-function left(){
-
-if(!gameRunning)return;
-
-carX=Math.max(20,carX-35);
-
-car.style.left=carX+"px";
-
-}
-
-function right(){
-
-if(!gameRunning)return;
-
-carX=Math.min(280,carX+35);
-
-car.style.left=carX+"px";
-
-}
-
-function startGame(){
-
-gameRunning=true;
-
-moveRoad();
-
-spawnEnemy();
-
-}
-
-function moveRoad(){
-
-const lines=document.querySelectorAll(".line");
-
-setInterval(function(){
-
-lines.forEach(function(line){
-
-let y=parseInt(line.style.top);
-
-y+=6+level;
-
-if(y>640)y=-60;
-
-line.style.top=y+"px";
-function spawnEnemy(){
-
-const enemy=document.createElement("div");
-
-enemy.className="enemy";
-
-enemy.innerHTML=`
-<div class="car-body"></div>
-<div class="windshield"></div>
-<div class="wheel w1"></div>
-<div class="wheel w2"></div>
-<div class="wheel w3"></div>
-<div class="wheel w4"></div>
-`;
-
-enemy.style.left=(35+Math.floor(Math.random()*4)*70)+"px";
-enemy.style.top="-130px";
-
-game.appendChild(enemy);
-
-let y=-130;
-
-const move=setInterval(function(){
-
-if(!gameRunning){
-clearInterval(move);
-return;
-}
-
-y+=5+level;
-
-enemy.style.top=y+"px";
-
-const carRect=car.getBoundingClientRect();
-const enemyRect=enemy.getBoundingClientRect();
-
-if(
-carRect.left<enemyRect.right &&
-carRect.right>enemyRect.left &&
-carRect.top<enemyRect.bottom &&
-carRect.bottom>enemyRect.top
-){
-
-lives--;
-
-livesText.innerHTML=lives;
-
-enemy.remove();
-
-clearInterval(move);
-
-if(lives<=0){
-
-alert("💥 Game Over!\nScore: "+score);
-
-location.reload();
-
-}else{
-
-spawnEnemy();
-
-}
-
-return;
-
-}
-
-if(y>700){
-
-enemy.remove();
-
-clearInterval(move);
-
-score+=10;
-coins+=5;
-
-scoreText.innerHTML=score;
-coinText.innerHTML=coins;
-
-if(score%100===0){
-
-level++;
-
-levelText.innerHTML=level;
-
-alert("🏁 Level "+level+"!");
-
-}
-
-spawnEnemy();
-
-}</script>
-
-</body>
-</html>
-
-},30);
-
+class SnapWaveApp extends StatelessWidget {
+  const SnapWaveApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'SnapWave',
+      theme: ThemeData(
+        colorSchemeSeed: Colors.blue,
+      ),
+      home: const HomePage(),
+    );
   }
-});
+}
 
-},30);
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("SnapWave")),
+      body: const Center(
+        child: Text(
+          "Welcome to SnapWave!",
+          style: TextStyle(fontSize: 24),
+        ),
+      ),
+    );
   }
+}snapwave/
+├── lib/
+│   ├── main.dart
+│   ├── screens/
+│   │   ├── login_screen.dart
+│   │   ├── signup_screen.dart
+│   │   ├── home_screen.dart
+│   │   ├── profile_screen.dart
+│   │   ├── upload_screen.dart
+│   │   ├── search_screen.dart
+│   │   └── settings_screen.dart
+│   ├── models/
+│   ├── services/
+│   ├── widgets/
+│   └── utils/
+├── assets/
+│   ├── images/
+│   └── icons/
+└── pubspec.yamlusers
+posts
+comments
+likes
+followers
+messages
+notificationsimport 'package:flutter/material.dart';
 
-#w
+void main() {
+  runApp(const SnapWave());
+}
+
+class SnapWave extends StatelessWidget {
+  const SnapWave({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'SnapWave',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+      ),
+      home: const LoginScreen(),
+    );
+  }
+}
+
+class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("SnapWave")),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              "Welcome Back",
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 30),
+            const TextField(
+              decoration: InputDecoration(
+                labelText: "Email",
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 15),
+            const TextField(
+              obscureText: true,
+              decoration: InputDecoration(
+                labelText: "Password",
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  // Login code goes here
+                },
+                child: const Text("Log In"),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                // Open Sign Up screen
+              },
+              child: const Text("Create a new account"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }dependencies:
+  flutter:
+    sdk: flutter
+
+  firebase_core: ^3.0.0
+  firebase_auth: ^5.0.0
+  cloud_firestore: ^5.0.0
+flutter pub get
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  runApp(const SnapWave());
+}
+  import 'package:firebase_auth/firebase_auth.dart';
+
+final FirebaseAuth auth = FirebaseAuth.instance;
+
+Future<void> signUp(String email, String password) async {
+  await auth.createUserWithEmailAndPassword(
+    email: email,
+    password: password,
+  );
+}
+  Future<void> login(String email, String password) async {
+  await auth.signInWithEmailAndPassword(
+    email: email,
+    password: password,
+  );
+}
+    Future<void> logout() async {
+  await auth.signOut();
+}
+      import 'package:flutter/material.dart';
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int currentIndex = 0;
+
+  final List<Widget> pages = const [
+    Center(child: Text("Home Feed")),
+    Center(child: Text("Search")),
+    Center(child: Text("Create Post")),
+    Center(child: Text("Notifications")),
+    Center(child: Text("Profile")),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("SnapWave"),
+      ),
+      body: pages[currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: currentIndex,
+        onTap: (index) {
+          setState(() {
+            currentIndex = index;
+          });
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: "Home",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: "Search",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add_box),
+            label: "Create",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications),
+            label: "Alerts",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: "Profile",
+          ),
+        ],
+      ),
+    );
+  }
+}class UserProfile {
+  final String uid;
+  final String username;
+  final String fullName;
+  final String bio;
+  final String profileImage;
+
+  UserProfile({
+    required this.uid,
+    required this.username,
+    required this.fullName,
+    required this.bio,
+    required this.profileImage,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'uid': uid,
+      'username': username,
+      'fullName': fullName,
+      'bio': bio,
+      'profileImage': profileImage,
+    };
+  }import 'package:flutter/material.dart';
+
+class ProfileScreen extends StatelessWidget {
+  const ProfileScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("My Profile"),
+      ),
+      body: Column(
+        children: [
+          const SizedBox(height: 20),
+          const CircleAvatar(
+            radius: 50,
+            child: Icon(Icons.person, size: 50),
+          ),
+          const SizedBox(height: 10),
+          const Text(
+            "@username",
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const Text("Welcome to my SnapWave profile!"),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: const [
+              Column(
+                children: [
+                  Text("25", style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text("Posts"),
+                ],
+              ),
+              Column(
+                children: [
+                  Text("120", style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text("Followers"),
+                ],
+              ),
+              Column(
+                children: [
+                  Text("80", style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text("Following"),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }class Post {
+  final String id;
+  final String userId;
+  final String imageUrl;
+  final String caption;
+  final int likes;
+
+  Post({
+    required this.id,
+    required this.userId,
+    required this.imageUrl,
+    required this.caption,
+    required this.likes,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      "id": id,
+      "userId": userId,
+      "imageUrl": imageUrl,
+      "caption": caption,
+      "likes": likes,
+    };
+  }
+}import 'package:flutter/material.dart';
+
+class UploadScreen extends StatefulWidget {
+  const UploadScreen({super.key});
+
+  @override
+  State<UploadScreen> createState() => _UploadScreenState();
+}
+
+class _UploadScreenState extends State<UploadScreen> {
+  final TextEditingController captionController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Create Post"),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            Container(
+              height: 220,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+              ),
+              child: const Center(
+                child: Text("Select Image"),
+              ),
+            ),
+            const SizedBox(height: 20),
+            TextField(
+              controller: captionController,
+              decoration: const InputDecoration(
+                labelText: "Write a caption",
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // Upload image and save post
+              },
+              child: const Text("Post"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }ListView(
+  children: const [
+    Card(
+      child: ListTile(
+        leading: CircleAvatar(
+          child: Icon(Icons.person),
+        ),
+        title: Text("@gideon"),
+        subtitle: Text("Hello SnapWave! 🎉"),
+      ),
+    ),
+  ],
+)
+  IconButton(
+  icon: Icon(
+    isLiked ? Icons.favorite : Icons.favorite_border,
+    color: isLiked ? Colors.red : Colors.grey,
+  ),
+  onPressed: () {
+    setState(() {
+      isLiked = !isLiked;
+    });
+  },
+)
+}
+}
+}
+}
+  class Comment {
+  final String userId;
+  final String username;
+  final String text;
+
+  Comment({
+    required this.userId,
+    required this.username,
+    required this.text,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      "userId": userId,
+      "username": username,
+      "text": text,
+    };
+  }TextField(
+  decoration: const InputDecoration(
+    hintText: "Write a comment...",
+    border: OutlineInputBorder(),
+  ),
+)
+}
+    ElevatedButton(
+  onPressed: () {
+    // Save comment to Firebase
+  },
+  child: const Text("Send"),
+)
+    import 'package:flutter/material.dart';
+
+class UserCard extends StatefulWidget {
+  final String username;
+
+  const UserCard({
+    super.key,
+    required this.username,
+  });
+
+  @override
+  State<UserCard> createState() => _UserCardState();
+}
+
+class _UserCardState extends State<UserCard> {
+  bool isFollowing = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ListTile(
+        leading: const CircleAvatar(
+          child: Icon(Icons.person),
+        ),
+        title: Text(widget.username),
+        trailing: ElevatedButton(
+          onPressed: () {
+            setState(() {
+              isFollowing = !isFollowing;
+            });
+
+            // Save follow/unfollow to Firebase
+          },
+          child: Text(
+            isFollowing ? "Following" : "Follow",
+          ),
+        ),
+      ),
+    );
+  }import 'package:flutter/material.dart';
+
+class SearchScreen extends StatelessWidget {
+  const SearchScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Search Users"),
+      ),
+      body: ListView(
+        children: const [
+          UserCard(username: "Gideon"),
+          UserCard(username: "Alex"),
+          UserCard(username: "Sarah"),
+          UserCard(username: "David"),
+        ],
+      ),
+    );
+  }
+}
+}
