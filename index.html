@@ -1,47 +1,537 @@
 
-<div id="videoContainer"></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>GIDDY VIDEOS</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #080b12;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+header {
+  background: #111827;
+  padding: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid #293044;
+}
+
+.logo {
+  color: #ff3030;
+  font-size: 23px;
+  font-weight: bold;
+}
+
+.logo span {
+  color: white;
+}
+
+.refresh {
+  background: #252d3e;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-size: 18px;
+}
+
+.hero {
+  text-align: center;
+  padding: 35px 15px;
+  background: linear-gradient(135deg,#171e35,#3a1020);
+}
+
+.hero h1 {
+  font-size: 29px;
+  margin-bottom: 12px;
+}
+
+.hero p {
+  color: #ccc;
+  margin-bottom: 22px;
+}
+
+.search {
+  display: flex;
+  max-width: 650px;
+  margin: auto;
+  background: white;
+  border-radius: 30px;
+  overflow: hidden;
+}
+
+.search input {
+  flex: 1;
+  width: 50%;
+  min-width: 0;
+  padding: 16px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: #111;
+}
+
+.search button {
+  background: #ff3030;
+  color: white;
+  border: none;
+  padding: 0 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 18px 14px;
+}
+
+.tabs button {
+  border: none;
+  background: #20293a;
+  color: white;
+  padding: 11px 17px;
+  border-radius: 22px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.tabs button.active {
+  background: #ff3030;
+}
+
+.heading {
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.heading h2 {
+  font-size: 20px;
+}
+
+#sort {
+  background: #20293a;
+  color: white;
+  border: 1px solid #39445a;
+  padding: 9px;
+  border-radius: 8px;
+}
+
+#status {
+  text-align: center;
+  color: #bbb;
+  padding: 25px 15px;
+}
+
+.videos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
+  gap: 17px;
+  padding: 15px;
+}
+
+.card {
+  background: #171e2c;
+  border-radius: 13px;
+  overflow: hidden;
+  border: 1px solid #283248;
+}
+
+.thumbnail {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  display: block;
+  cursor: pointer;
+}
+
+.info {
+  padding: 13px;
+}
+
+.info h3 {
+  font-size: 15px;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.info p {
+  color: #aaa;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.watch {
+  background: #ff3030;
+  color: white;
+  border: none;
+  border-radius: 7px;
+  padding: 10px 15px;
+  margin-top: 13px;
+  cursor: pointer;
+}
+
+.watch:hover {
+  background: #d91e1e;
+}
+
+#player {
+  display: none;
+  padding: 15px;
+}
+
+#player iframe {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border: none;
+  border-radius: 12px;
+}
+
+.back {
+  background: #ff3030;
+  color: white;
+  border: none;
+  padding: 11px 17px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+footer {
+  background: #111827;
+  padding: 30px 15px;
+  text-align: center;
+  margin-top: 30px;
+  color: #aaa;
+}
+
+footer h2 {
+  color: #ff3030;
+  margin-bottom: 10px;
+}
+
+footer p {
+  margin: 7px;
+  font-size: 13px;
+}
+
+@media(max-width:450px) {
+  .videos {
+    grid-template-columns: 1fr;
+  }
+
+  .hero h1 {
+    font-size: 25px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">▶ <span>GIDDY</span> VIDEOS</div>
+  <button class="refresh" onclick="loadVideos()">↻</button>
+</header>
+
+<section class="hero">
+  <h1>Discover What's Trending!</h1>
+  <p>Explore the latest videos from Kenya and the world.</p>
+
+  <div class="search">
+    <input
+      id="searchInput"
+      type="search"
+      placeholder="Search any video..."
+      onkeydown="if(event.key==='Enter') searchVideos()">
+
+    <button onclick="searchVideos()">SEARCH</button>
+  </div>
+</section>
+
+<div class="tabs">
+  <button class="active" onclick="category('Kenya trending',this)">🇰🇪 Kenya</button>
+  <button onclick="category('Kenya news',this)">📰 News</button>
+  <button onclick="category('Kenya music',this)">🎵 Music</button>
+  <button onclick="category('Kenya sports',this)">⚽ Sports</button>
+  <button onclick="category('Kenya comedy',this)">😂 Comedy</button>
+  <button onclick="category('Kenya movies',this)">🎬 Movies</button>
+  <button onclick="category('gaming',this)">🎮 Gaming</button>
+  <button onclick="category('technology',this)">💻 Technology</button>
+</div>
+
+<div class="heading">
+  <h2 id="heading">🇰🇪 Latest Videos</h2>
+
+  <select id="sort" onchange="changeSort()">
+    <option value="date">Latest</option>
+    <option value="viewCount">Popular</option>
+    <option value="relevance">Relevant</option>
+  </select>
+</div>
+
+<div id="status">Preparing videos...</div>
+
+<div id="videos" class="videos"></div>
+
+<section id="player">
+  <button class="back" onclick="closePlayer()">← Back</button>
+  <iframe
+    id="videoFrame"
+    allow="autoplay; encrypted-media; picture-in-picture"
+    allowfullscreen>
+  </iframe>
+</section>
+
+<footer>
+  <h2>▶ GIDDY VIDEOS</h2>
+  <p>Your world of entertainment.</p>
+  <p>Discover • Watch • Enjoy</p>
+  <p>© 2026 GIDDY VIDEOS</p>
+</footer>
 
 <script>
+
+// =================================
+// GIDDY VIDEOS CONFIGURATION
+// =================================
+
+// ADD YOUR YOUTUBE API KEY HERE
+
 const API_KEY = "YOUR_YOUTUBE_API_KEY";
 
-async function loadVideos() {
+// Default search
+
+let currentQuery = "Kenya trending";
+let currentSort = "date";
+
+// =================================
+// LOAD VIDEOS
+// =================================
+
+async function loadVideos(query = currentQuery) {
+
+  currentQuery = query;
+
+  const container = document.getElementById("videos");
+  const status = document.getElementById("status");
+
+  container.innerHTML = "";
+
+  document.getElementById("player").style.display = "none";
+  container.style.display = "grid";
+  status.style.display = "block";
+
+  if (!API_KEY || API_KEY === "YOUR_YOUTUBE_API_KEY") {
+    status.textContent =
+      "YouTube API key missing. Add your Google API key to load videos.";
+    return;
+  }
+
+  status.textContent = "🔍 Searching for videos...";
+
+  const params = new URLSearchParams({
+    part: "snippet",
+    type: "video",
+    maxResults: "20",
+    regionCode: "KE",
+    order: currentSort,
+    q: query,
+    key: API_KEY
+  });
+
   const url =
-    `https://www.googleapis.com/youtube/v3/search` +
-    `?part=snippet&type=video&maxResults=12` +
-    `&q=Kenya%20trending` +
-    `&order=date` +
-    `&regionCode=KE` +
-    `&key=${API_KEY}`;
+    "https://www.googleapis.com/youtube/v3/search?" +
+    params.toString();
 
   try {
+
     const response = await fetch(url);
     const data = await response.json();
 
-    const container = document.getElementById("videoContainer");
-    container.innerHTML = "";
+    if (!response.ok) {
+      throw new Error(
+        data.error?.message || "Unable to retrieve videos"
+      );
+    }
+
+    if (!data.items || data.items.length === 0) {
+      status.textContent = "No videos found. Try another search.";
+      return;
+    }
+
+    status.textContent =
+      "Showing " + data.items.length + " video results";
 
     data.items.forEach(video => {
-      container.innerHTML += `
-        <div class="card">
-          <iframe
-            src="https://www.youtube.com/embed/${video.id.videoId}"
-            allowfullscreen>
-          </iframe>
 
-          <div class="info">
-            <h2>${video.snippet.title}</h2>
-            <p>${video.snippet.channelTitle}</p>
-          </div>
-        </div>
-      `;
+      const id = video.id.videoId;
+      const details = video.snippet;
+
+      const card = document.createElement("div");
+      card.className = "card";
+
+      const image = document.createElement("img");
+
+      image.className = "thumbnail";
+      image.src =
+        details.thumbnails.high?.url ||
+        details.thumbnails.medium?.url;
+
+      image.alt = details.title;
+      image.loading = "lazy";
+
+      image.onclick = () => playVideo(id);
+
+      const info = document.createElement("div");
+      info.className = "info";
+
+      const title = document.createElement("h3");
+      title.textContent = details.title;
+
+      const channel = document.createElement("p");
+      channel.textContent =
+        "📺 " + details.channelTitle;
+
+      const date = document.createElement("p");
+      date.textContent =
+        "📅 " +
+        new Date(details.publishedAt).toLocaleDateString();
+
+      const watch = document.createElement("button");
+      watch.className = "watch";
+      watch.textContent = "▶ Watch Video";
+
+      watch.onclick = () => playVideo(id);
+
+      info.append(title, channel, date, watch);
+      card.append(image, info);
+
+      container.appendChild(card);
+
     });
 
-  } catch (error) {
-    document.getElementById("videoContainer").innerHTML =
-      "<h2>Unable to load videos.</h2>";
-    console.error(error);
+  } catch(error) {
+
+    status.textContent =
+      "Error loading videos: " + error.message;
+
   }
 }
 
+// =================================
+// SEARCH
+// =================================
+
+function searchVideos() {
+
+  const query =
+    document.getElementById("searchInput").value.trim();
+
+  if (!query) {
+    alert("Please enter a video to search.");
+    return;
+  }
+
+  document.getElementById("heading").textContent =
+    "Search: " + query;
+
+  loadVideos(query);
+}
+
+// =================================
+// CATEGORIES
+// =================================
+
+function category(query, button) {
+
+  document.querySelectorAll(".tabs button")
+    .forEach(item => item.classList.remove("active"));
+
+  button.classList.add("active");
+
+  document.getElementById("searchInput").value = "";
+
+  document.getElementById("heading").textContent =
+    "Latest " + query + " videos";
+
+  loadVideos(query);
+}
+
+// =================================
+// SORT VIDEOS
+// =================================
+
+function changeSort() {
+
+  currentSort =
+    document.getElementById("sort").value;
+
+  loadVideos(currentQuery);
+}
+
+// =================================
+// VIDEO PLAYER
+// =================================
+
+function playVideo(id) {
+
+  document.getElementById("videos").style.display = "none";
+  document.getElementById("status").style.display = "none";
+
+  document.getElementById("player").style.display = "block";
+
+  document.getElementById("videoFrame").src =
+    "https://www.youtube.com/embed/" +
+    encodeURIComponent(id) +
+    "?autoplay=1";
+
+  window.scrollTo(0, 0);
+}
+
+// =================================
+// CLOSE PLAYER
+// =================================
+
+function closePlayer() {
+
+  document.getElementById("videoFrame").src = "";
+
+  document.getElementById("player").style.display = "none";
+
+  document.getElementById("videos").style.display = "grid";
+
+  document.getElementById("status").style.display = "block";
+
+}
+
+// =================================
+// START WEBSITE
+// =================================
+
 loadVideos();
+
 </script>
+
+</body>
+  </html>
+  
